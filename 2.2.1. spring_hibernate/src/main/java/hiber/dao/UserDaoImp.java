@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class UserDaoImp implements UserDao {
@@ -30,13 +29,11 @@ public class UserDaoImp implements UserDao {
 
    @Override
    public List<User> getUsers(Car car) {
-      TypedQuery<Car> query = sessionFactory.getCurrentSession()
-              .createQuery("from Car where model = :param1 and series = :param2")
+      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User user " +
+                      "where user.car.model = :param1 and user.car.series = :param2")
               .setParameter("param1", car.getModel())
               .setParameter("param2", car.getSeries());
-      List<Car> cars = query.getResultList();
-
-      return cars.stream().map(x -> x.getUser()).collect(Collectors.toList());
+      return query.getResultList();
    }
 
 }
